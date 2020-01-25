@@ -109,6 +109,7 @@ class Atom(object):
 
 def get_bot_wiki_response(query):
     help_text = 'Please enter your search term after {}'
+    new_content = 'Search term: ' + query + '\n'
     query += ' chemistry'
     if query == '':
         return help_text.format(bot_handler.identity().mention)
@@ -134,7 +135,6 @@ def get_bot_wiki_response(query):
         return 'Uh-Oh ! Sorry ,couldn\'t process the request right now.:slightly_frowning_face:\n' \
                'Please try again later.'
 
-    new_content = 'Search term: ' + query + '\n'
 
     if len(data.json()['query']['search']) == 0:
         new_content = 'I am sorry. The search term you provided is not found :slightly_frowning_face:'
@@ -142,7 +142,7 @@ def get_bot_wiki_response(query):
         search_string = data.json()['query']['search'][0]['title'].replace(' ', '_')
 
         new_content += wikipedia.summary(search_string, sentences=2)
-    return new_content
+    return new_content + "\n"
 
 def get_bot_response(message: Dict[str, str], bot_handler: Any) -> str:
     content = message['content']
@@ -188,10 +188,6 @@ def get_bot_response(message: Dict[str, str], bot_handler: Any) -> str:
             compounds.sort()
         return_answer += "\nThe final product is \n"
         return_answer += balance_eqn(init_compounds, compounds)
-
-        return_answer += "\nHere are some facts about the compounds\n"
-        for i in compounds:
-            return_answer += get_bot_wiki_response(i)
         return return_answer
     if words[0] == "add":
         reactants = []
@@ -222,6 +218,16 @@ def get_bot_response(message: Dict[str, str], bot_handler: Any) -> str:
         f = open(os.path.join(__location__, 'equations.txt'), "a");
         f.write("\n" + R + " " + P)
         return "Successfully added the reaction"
+    if words[0] == "explain_products":
+        compounds = []
+        return_answer = ""
+        for i in range(len(words)):
+            if i != 0:
+                compounds.append(words[i])
+        return_answer += "\nHere are some facts about the compounds\n"
+        for i in compounds:
+            return_answer += get_bot_wiki_response(i)
+        return return_answer
 
 handler_class = Atom
 
