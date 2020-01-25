@@ -1,2 +1,2 @@
 # HackWorse
-Hackverse Project by team HackWorse
+HackVerse project by team HackWorse.
