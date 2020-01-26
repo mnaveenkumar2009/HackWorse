@@ -86,7 +86,13 @@ def balance_eqn(reactants, products):
             coeffs.remove(0)
     lhs = " + ".join(["{} {}".format(coeffs[i], s) if coeffs[i] > 0 else '' for i, s in enumerate(lhs_strings)])
     rhs = " + ".join(["{} {}".format(coeffs[i], s) if coeffs[i] > 0 else '' for i, s in enumerate(rhs_strings, len(lhs_strings))])
-    return ans +  "\n" + ("{} -> {}\n".format(lhs, rhs))
+
+    if len(ans) > 0:
+        S = ans.split("->")
+        lhs += " + " + S[0]
+        rhs += " + " +  S[1]
+        print(S)
+    return ("{} -> {}\n".format(lhs, rhs))
 
 
 Eqn_Hash = {}
@@ -255,3 +261,5 @@ def get_bot_response(message: Dict[str, str], bot_handler: Any) -> str:
         return get_bot_wiki_response(title)
 
 handler_class = Atom
+
+
