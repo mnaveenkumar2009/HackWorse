@@ -15,6 +15,9 @@ import re
 import urllib
 from zulip_bots.lib import Any
 import wikipedia
+from bs4 import BeautifulSoup
+from urllib.request import urlopen
+from googlesearch import search
 
 import copy
 import importlib
@@ -35,10 +38,10 @@ def parse_compound(compound):
 def balance_eqn(reactants, products):
     lhs_strings = reactants
     lhs_compounds = [parse_compound(compound) for compound in lhs_strings]
-    
+
     rhs_strings = products
     rhs_compounds = [parse_compound(compound) for compound in rhs_strings]
-    
+
     els = sorted(set().union(*lhs_compounds, *rhs_compounds))
     els_index = dict(zip(els, range(len(els))))
 
@@ -57,9 +60,9 @@ def balance_eqn(reactants, products):
             A[row][col] = -num   # invert coefficients for RHS
 
     # Solve using Sympy for absolute-precision math
-    A = sympy.Matrix(A)    
+    A = sympy.Matrix(A)
     # find first basis vector == primary solution
-    coeffs = A.nullspace()[0]    
+    coeffs = A.nullspace()[0]
     # find least common denominator, multiply through to convert to integer solution
     coeffs *= sympy.lcm([term.q for term in coeffs])
     reactants = []
@@ -228,6 +231,26 @@ def get_bot_response(message: Dict[str, str], bot_handler: Any) -> str:
         for i in compounds:
             return_answer += get_bot_wiki_response(i)
         return return_answer
+    else:
+
+        compounds = []
+        return_answer = ""
+        for i in range(len(words)):
+                compounds.append(words[i])
+        return_answer += "\nAnswer:\n"
+        query = ''
+        for i in compounds:
+            query += i + ' '
+        query += ' chemistry wikipedia'
+
+        for i in search(query, tld="com", num=10, stop=1, pause=2):
+            store = i
+            break
+
+        html = urlopen(store)
+        title = BeautifulSoup(html, 'html.parser').find("title").text
+        title = title[:-12]
+        print(title)
+        return get_bot_wiki_response(title)
 
 handler_class = Atom
-
