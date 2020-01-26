@@ -237,6 +237,31 @@ def get_bot_response(message: Dict[str, str], bot_handler: Any) -> str:
         for i in compounds:
             return_answer += get_bot_wiki_response(i)
         return return_answer
+    if words[0] == "structure":
+        compounds = []
+        return_answer = ""
+        for i in range(len(words)):
+                compounds.append(words[i])
+        return_answer += "\nAnswer:\n"
+        query = ''
+        for i in compounds:
+            query += i + ' '
+        query += ' chemistry wikipedia'
+
+        for i in search(query, tld="com", num=10, stop=1, pause=2):
+            store = i
+            break
+
+        html = urlopen(store)
+        soup = BeautifulSoup(html, 'html.parser')
+        title = soup.find("title").text
+        title = title[:-12]
+        print(soup.find_all('img'))
+
+        imgurl = soup.find('img')['src']
+
+        r = "[" + title + "](https:" + imgurl + ")"
+        return r
     else:
 
         compounds = []
@@ -259,6 +284,7 @@ def get_bot_response(message: Dict[str, str], bot_handler: Any) -> str:
         title = title[:-12]
         print(title)
         return get_bot_wiki_response(title)
+        # return "[Methane-2D-dimensions.svg](https://upload.wikimedia.org/wikipedia/commons/9/9b/Methane-2D-dimensions.svg)"
 
 handler_class = Atom
 
