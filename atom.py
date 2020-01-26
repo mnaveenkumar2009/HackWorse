@@ -248,6 +248,7 @@ def get_bot_response(message: Dict[str, str], bot_handler: Any) -> str:
             break
 
         html = urlopen(store)
+        print(store)
         title = BeautifulSoup(html, 'html.parser').find("title").text
         title = title[:-12]
         print(title)
