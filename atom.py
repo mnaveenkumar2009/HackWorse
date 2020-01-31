@@ -22,13 +22,10 @@ from googlesearch import search
 import copy
 import importlib
 
-import os
 from zulip_bots.bots.converter import utils
 
-from typing import List
-from typing import Optional, Any, Dict
+from typing import Optional
 
-# match a single element and optional count, like Na2
 ELEMENT_CLAUSE = re.compile("([A-Z][a-z]?)([0-9]*)")
 
 def parse_compound(compound):
@@ -63,7 +60,6 @@ def balance_eqn(reactants, products):
     A = sympy.Matrix(A)
     # find first basis vector == primary solution
     coeffs = A.nullspace()[0]
-    # find least common denominator, multiply through to convert to integer solution
     coeffs *= sympy.lcm([term.q for term in coeffs])
     reactants = []
     products = []
@@ -94,7 +90,6 @@ def balance_eqn(reactants, products):
         print(S)
     return ("{} -> {}\n".format(lhs, rhs))
 
-
 Eqn_Hash = {}
 
 def load_equations():
@@ -109,7 +104,7 @@ def load_equations():
 class Atom(object):
     def usage(self) -> str:
         return '''
-               This plugin allows users to .
+               This plugin allows users to solve equations and clear chemistry doubts.
                '''
     def handle_message(self, message: Dict[str, str], bot_handler: Any) -> None:
         bot_response = get_bot_response(message, bot_handler)
@@ -227,6 +222,7 @@ def get_bot_response(message: Dict[str, str], bot_handler: Any) -> str:
         f = open(os.path.join(__location__, 'equations.txt'), "a");
         f.write("\n" + R + " " + P)
         return "Successfully added the reaction"
+
     if words[0] == "explain_products":
         compounds = []
         return_answer = ""
@@ -237,6 +233,7 @@ def get_bot_response(message: Dict[str, str], bot_handler: Any) -> str:
         for i in compounds:
             return_answer += get_bot_wiki_response(i)
         return return_answer
+
     if words[0] == "structure":
         compounds = []
         return_answer = ""
@@ -248,9 +245,7 @@ def get_bot_response(message: Dict[str, str], bot_handler: Any) -> str:
             query += i + ' '
         query += ' chemistry wikipedia'
 
-        for i in search(query, tld="com", num=10, stop=1, pause=2):
-            store = i
-            break
+        store = (search(query, tld="com", num=10, stop=1, pause=2))[0]
 
         html = urlopen(store)
         soup = BeautifulSoup(html, 'html.parser')
@@ -262,8 +257,8 @@ def get_bot_response(message: Dict[str, str], bot_handler: Any) -> str:
 
         r = "[" + title + "](https:" + imgurl + ")"
         return r
-    else:
 
+    else:
         compounds = []
         return_answer = ""
         for i in range(len(words)):
@@ -274,18 +269,11 @@ def get_bot_response(message: Dict[str, str], bot_handler: Any) -> str:
             query += i + ' '
         query += ' chemistry wikipedia'
 
-        for i in search(query, tld="com", num=10, stop=1, pause=2):
-            store = i
-            break
+        store = (search(query, tld="com", num=10, stop=1, pause=2))[0]
 
         html = urlopen(store)
-        print(store)
         title = BeautifulSoup(html, 'html.parser').find("title").text
         title = title[:-12]
-        print(title)
         return get_bot_wiki_response(title)
-        # return "[Methane-2D-dimensions.svg](https://upload.wikimedia.org/wikipedia/commons/9/9b/Methane-2D-dimensions.svg)"
 
 handler_class = Atom
-
-
