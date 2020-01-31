@@ -56,7 +56,7 @@ def balance_eqn(reactants, products):
     coeffs *= sympy.lcm([term.q for term in coeffs])
     reactants = []
     products = []
-    print(coeffs)
+
     ans = ""
     for i in range(len(lhs_strings)):
         if coeffs[i] == 0:
@@ -81,7 +81,17 @@ def balance_eqn(reactants, products):
         lhs += " + " + S[0]
         rhs += " + " +  S[1]
         print(S)
-    return ("{} -> {}\n".format(lhs, rhs))
+    SUB = str.maketrans("0123456789", "₀₁₂₃₄₅₆₇₈₉")
+    revSUB = str.maketrans("₀₁₂₃₄₅₆₇₈₉", "0123456789")
+    ret =  ("{} -> {}\n".format(lhs, rhs))
+    ret = ret.translate(SUB)
+    ret = list(ret)
+    ret[0] = ret[0].translate(revSUB)
+    for i in range(1, len(ret)):
+        if ret[i-1] == ' ':
+            ret[i] = ret[i].translate(revSUB)
+    ret = ''.join(ret)
+    return ret
 
 Eqn_Hash = {}
 
