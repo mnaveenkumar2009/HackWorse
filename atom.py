@@ -245,7 +245,9 @@ def get_bot_response(message: Dict[str, str], bot_handler: Any) -> str:
             query += i + ' '
         query += ' chemistry wikipedia'
 
-        store = (search(query, tld="com", num=10, stop=1, pause=2))[0]
+        for i in search(query, tld="com", num=10, stop=1, pause=2):
+            store = i
+            break
 
         html = urlopen(store)
         soup = BeautifulSoup(html, 'html.parser')
@@ -269,11 +271,15 @@ def get_bot_response(message: Dict[str, str], bot_handler: Any) -> str:
             query += i + ' '
         query += ' chemistry wikipedia'
 
-        store = (search(query, tld="com", num=10, stop=1, pause=2))[0]
-
+        for i in search(query, tld="com", num=10, stop=1, pause=2):
+            store = i
+            break
+            
         html = urlopen(store)
         title = BeautifulSoup(html, 'html.parser').find("title").text
         title = title[:-12]
         return get_bot_wiki_response(title)
 
 handler_class = Atom
+
+
