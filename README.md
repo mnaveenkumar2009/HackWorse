@@ -9,7 +9,7 @@ Steps to test Atom.
 
 3. Download the ```zuliprc``` for the created bot. Place this file inside HackWorse folder.
 4. Go to HackWorse folder ```cd HackWorse```
-5. Run ```pip3 install zulip_bots wikipedia sympy google BeautifulSoup4``` to install the required libraries.
+5. Run ```pip3 install zulip zulip_bots wikipedia sympy google BeautifulSoup4``` to install the required libraries.
 6. To run the bot use command ```zulip-run-bot atom.py --config-file zuliprc```
 
 ### Commands 
