@@ -1,14 +1,10 @@
 import copy
 import importlib
-
 import os
 import re
 from zulip_bots.bots.converter import utils
-
 from typing import Any, Dict, List
-
 import sympy
-
 import requests
 import logging
 import re
@@ -18,12 +14,9 @@ import wikipedia
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from googlesearch import search
-
 import copy
 import importlib
-
 from zulip_bots.bots.converter import utils
-
 from typing import Optional
 
 ELEMENT_CLAUSE = re.compile("([A-Z][a-z]?)([0-9]*)")
@@ -223,7 +216,7 @@ def get_bot_response(message: Dict[str, str], bot_handler: Any) -> str:
         f.write("\n" + R + " " + P)
         return "Successfully added the reaction"
 
-    if words[0] == "explain_products":
+    if words[0] == "explain_product":
         compounds = []
         return_answer = ""
         for i in range(len(words)):
